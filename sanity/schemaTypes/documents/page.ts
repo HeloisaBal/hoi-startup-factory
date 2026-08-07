@@ -28,3 +28,4 @@ export const page = defineType({
   ],
   preview: { select: { title: 'title', subtitle: 'slug.current' } },
 })
+

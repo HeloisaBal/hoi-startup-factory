@@ -13,7 +13,7 @@ export function Hero({ eyebrow, heading, headingMark, subheading, buttons, image
           {heading}
           {headingMark && (
             <>
-              {' '}
+            <br />
               <span className="mark">{headingMark}</span>
             </>
           )}
