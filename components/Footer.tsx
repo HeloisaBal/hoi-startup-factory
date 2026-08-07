@@ -25,7 +25,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <img src="/logo-white.png" alt="hoi startup factory" className="h-10 w-auto" />
-            <p className="mt-6 text-sm leading-relaxed text-brand-200">
+            <p className="mt-8 text-sm leading-relaxed text-brand-200">
               Harbour of ideas — wir verbinden Wissenschaft, Wirtschaft und Gründergeist
               im Nordwesten.
             </p>
