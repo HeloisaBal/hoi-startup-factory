@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   hoi startup factory — DESIGN TOKENS
+   Sampled from the official logo:
+     purple #9A00FF · blue #003EFE · teal #00D7B8
+   ============================================================ */
+@theme {
+  /* PRIMARY — brand purple */
+  --color-brand-50:  #faf2ff;
+  --color-brand-100: #f3e0ff;
+  --color-brand-200: #e9c6ff;
+  --color-brand-300: #d99cff;
+  --color-brand-400: #c261ff;
+  --color-brand-500: #9a00ff;
+  --color-brand-600: #8a00e6;
+  --color-brand-700: #7400c2;
+  --color-brand-800: #61019e;
+  --color-brand-900: #500481;
+  --color-brand-950: #33005c;
+
+  /* SECONDARY — electric blue (highlights, links, focus) */
+  --color-electric-50:  #eef2ff;
+  --color-electric-100: #dee6ff;
+  --color-electric-200: #c3d0ff;
+  --color-electric-300: #9fb2ff;
+  --color-electric-400: #7089ff;
+  --color-electric-500: #3f5cff;
+  --color-electric-600: #003efe;
+  --color-electric-700: #0032d9;
+  --color-electric-800: #062bad;
+  --color-electric-900: #0d2c88;
+  --color-electric-950: #091a52;
+
+  /* ACCENT — teal */
+  --color-teal-300: #66f2dd;
+  --color-teal-400: #2ceccd;
+  --color-teal-500: #00d7b8;
+  --color-teal-600: #00ad96;
+
+  /* Neutrals */
+  --color-ink:     #0d0a16;
+  --color-muted:   #5c5670;
+  --color-line:    #e8e4f0;
+  --color-surface: #f8f5fd;
+  --color-slate-brand: #527691;
+
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 1.25rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: white;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- shared pieces ---- */
+.eyebrow {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-brand-500);
+}
+
+.container-x {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+@media (min-width: 1024px) { .container-x { padding-inline: 2.5rem; } }
+
+/* Signature brand gradient — purple to teal, as on their hero */
+.brand-gradient {
+  background: linear-gradient(110deg, #9a00ff 0%, #a856f0 35%, #7885db 62%, #61b9c7 100%);
+}
+
+/* The blue highlight box behind key words, from their existing hero */
+.mark {
+  background: var(--color-electric-600);
+  color: white;
+  padding: .05em .25em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* ---- partner logo marquee ---- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 45s linear infinite; }
+
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+  html { scroll-behavior: auto; }
 }

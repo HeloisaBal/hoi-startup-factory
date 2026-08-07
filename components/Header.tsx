@@ -1,0 +1,65 @@
+'use client'
+
+import Link from 'next/link'
+import { useState } from 'react'
+
+const nav = [
+  { label: 'Home', href: '/' },
+  { label: 'Über uns', href: '/ueber-uns' },
+  { label: 'Partner', href: '/partner' },
+]
+
+export function Header() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-line/60 bg-white/90 backdrop-blur-md">
+      <div className="container-x flex items-center justify-between py-4">
+        <nav className="hidden items-center gap-9 md:flex">
+          {nav.map((n) => (
+            <Link key={n.href} href={n.href}
+              className="text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:text-brand-500">
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+
+        <Link href="/" className="md:absolute md:left-1/2 md:-translate-x-1/2">
+          <img src="/logo.png" alt="hoi startup factory" className="h-10 w-auto" />
+        </Link>
+
+        <div className="hidden items-center gap-5 md:flex">
+          <button className="text-sm font-medium text-muted transition-colors hover:text-ink">EN</button>
+          <Link href="/kontakt"
+            className="rounded-full bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 hover:-translate-y-0.5">
+            Kontakt
+          </Link>
+        </div>
+
+        <button onClick={() => setOpen(!open)} aria-label="Menü" aria-expanded={open}
+          className="md:hidden p-2 -mr-2">
+          <span className="mb-1.5 block h-0.5 w-6 bg-ink" />
+          <span className="mb-1.5 block h-0.5 w-6 bg-ink" />
+          <span className="block h-0.5 w-6 bg-ink" />
+        </button>
+      </div>
+
+      {open && (
+        <div className="border-t border-line bg-white md:hidden">
+          <nav className="container-x flex flex-col gap-1 py-4">
+            {nav.map((n) => (
+              <Link key={n.href} href={n.href} onClick={() => setOpen(false)}
+                className="py-2.5 text-base font-semibold uppercase tracking-wide">
+                {n.label}
+              </Link>
+            ))}
+            <Link href="/kontakt"
+              className="mt-3 rounded-full bg-brand-500 px-6 py-3 text-center text-sm font-semibold text-white">
+              Kontakt
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  )
+}

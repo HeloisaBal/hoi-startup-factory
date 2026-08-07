@@ -1,7 +1,19 @@
 import { Hero } from './blocks/Hero'
-import { CardGrid } from './blocks/CardGrid'
+import { FeatureGrid } from './blocks/FeatureGrid'
+import { Stats } from './blocks/Stats'
+import { TextImage } from './blocks/TextImage'
+import { LogoWall } from './blocks/LogoWall'
+import { CTA } from './blocks/CTA'
 
-const blocks: Record<string, any> = { hero: Hero, cardGrid: CardGrid }
+/* Add a new block: import it, add one line here, done. */
+const blocks: Record<string, any> = {
+  hero: Hero,
+  featureGrid: FeatureGrid,
+  stats: Stats,
+  textImage: TextImage,
+  logoWall: LogoWall,
+  cta: CTA,
+}
 
 export function Sections({ sections }: { sections?: any[] }) {
   if (!sections) return null
