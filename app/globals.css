@@ -45,8 +45,13 @@
   --color-surface: #f8f5fd;
   --color-slate-brand: #527691;
 
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --radius-card: 1.25rem;
+}
+
+/* `inline` so this resolves the CSS variable next/font sets on <html> at
+   runtime, instead of Tailwind trying to bake in a static value at build time. */
+@theme inline {
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
 }
 
 html { scroll-behavior: smooth; }
@@ -55,6 +60,10 @@ body {
   background: white;
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
 }
 
 /* ---- shared pieces ---- */
@@ -108,7 +117,7 @@ body {
 /* ---- floating audience cards ---- */
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-14px); }
+  50%      { transform: translateY(-8px); }
 }
 
 .float-card {

@@ -51,8 +51,18 @@ export const audienceHero = defineType({
               description: 'e.g. /startups or /investoren',
             }),
             defineField({
+              name: 'image',
+              title: 'Photo',
+              type: 'image',
+              options: { hotspot: true },
+              description: 'Shown at the top of the card. Falls back to the icon below if left empty.',
+              fields: [defineField({ name: 'alt', title: 'Alt text', type: 'string' })],
+            }),
+            defineField({
               name: 'icon',
+              title: 'Fallback icon',
               type: 'string',
+              description: 'Used only when no photo is set.',
               options: {
                 list: [
                   { title: 'Student — graduation cap', value: 'student' },
@@ -66,7 +76,7 @@ export const audienceHero = defineType({
               validation: (r) => r.required(),
             }),
           ],
-          preview: { select: { title: 'label', subtitle: 'href' } },
+          preview: { select: { title: 'label', subtitle: 'href', media: 'image' } },
         }),
       ],
     }),

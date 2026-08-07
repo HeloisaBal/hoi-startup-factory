@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { urlFor } from '@/sanity/lib/image'
 
 /* ---------- icons ---------- */
 const icons: Record<string, React.ReactNode> = {
@@ -47,7 +48,7 @@ function Icon({ name }: { name?: string }) {
       strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-8 w-8"
+      className="h-9 w-9"
       aria-hidden="true"
     >
       {icons[name || 'student'] ?? icons.student}
@@ -77,30 +78,40 @@ export function AudienceHero({ eyebrow, question, subtext, cards }: any) {
         )}
 
         {/* floating cards */}
-        <div className="mt-14 flex flex-wrap justify-center gap-5 md:gap-7">
+        <div className="mt-14 flex flex-wrap justify-center gap-6">
           {cards?.map((card: any, i: number) => (
             <Link
               key={card._key}
               href={card.href || '#'}
-              className="group float-card relative w-full max-w-[16rem] sm:w-64 rounded-[1.5rem] border border-white/25 bg-white/12 p-7 text-left backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-white/50 hover:bg-white/20 hover:shadow-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="group float-card relative flex h-80 w-64 flex-col overflow-hidden rounded-2xl bg-white text-left text-ink shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               style={{ animationDelay: `${i * 0.9}s` }}
             >
-              <span className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-white transition-colors duration-300 group-hover:bg-white group-hover:text-brand-600">
-                <Icon name={card.icon} />
-              </span>
-
-              <span className="block text-xl font-bold leading-snug">{card.label}</span>
-
-              {card.description && (
-                <span className="mt-2 block text-sm leading-relaxed text-white/80">
-                  {card.description}
+              <div className="relative h-36 w-full shrink-0 bg-brand-50">
+                {card.image ? (
+                  <img
+                    src={urlFor(card.image).width(500).height(300).fit('crop').url()}
+                    alt={card.image.alt || ''}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center text-brand-600">
+                    <Icon name={card.icon} />
+                  </span>
+                )}
+                <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand-600 shadow-md transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">
+                  →
                 </span>
-              )}
+              </div>
 
-              <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold">
-                Weiter
-                <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
-              </span>
+              <div className="flex flex-1 flex-col p-6">
+                <span className="block text-xl font-bold leading-snug">{card.label}</span>
+
+                {card.description && (
+                  <span className="mt-2 block text-sm leading-relaxed text-muted">
+                    {card.description}
+                  </span>
+                )}
+              </div>
             </Link>
           ))}
         </div>
