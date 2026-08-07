@@ -4,7 +4,7 @@ import { Button } from '../ui'
 export function Hero({ eyebrow, heading, headingMark, subheading, buttons, image }: any) {
   return (
     <section className="brand-gradient relative overflow-hidden text-white">
-      <div className="container-x relative z-10 pt-20 pb-40 md:pt-28 md:pb-52 text-center">
+      <div className="container-x relative z-10 pt-20 pb-32 md:pt-28 md:pb-40 text-center">
         {eyebrow && (
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.14em] text-white/80">{eyebrow}</p>
         )}
