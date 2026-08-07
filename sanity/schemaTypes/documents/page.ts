@@ -18,6 +18,7 @@ export const page = defineType({
       type: 'array',
       of: [
         defineArrayMember({ type: 'hero' }),
+        defineArrayMember({ type: 'audienceHero' }),
         defineArrayMember({ type: 'featureGrid' }),
         defineArrayMember({ type: 'stats' }),
         defineArrayMember({ type: 'textImage' }),

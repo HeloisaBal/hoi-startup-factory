@@ -1,4 +1,5 @@
 import { Hero } from './blocks/Hero'
+import { AudienceHero } from './blocks/AudienceHero'
 import { FeatureGrid } from './blocks/FeatureGrid'
 import { Stats } from './blocks/Stats'
 import { TextImage } from './blocks/TextImage'
@@ -8,6 +9,7 @@ import { CTA } from './blocks/CTA'
 /* Add a new block: import it, add one line here, done. */
 const blocks: Record<string, any> = {
   hero: Hero,
+  audienceHero: AudienceHero,
   featureGrid: FeatureGrid,
   stats: Stats,
   textImage: TextImage,
