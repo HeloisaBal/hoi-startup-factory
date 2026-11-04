@@ -7,6 +7,15 @@ import type { EventItem, Repeat } from './events'
 /** Storyblok "Datetime" fields are stored in UTC as "2026-11-05 17:30". */
 export const sbDate = (v?: string) => (v ? `${v.trim().replace(' ', 'T')}:00Z` : '')
 
+/** Date-only Storyblok field → "YYYY-MM-DD" in Bremen. The stored time is midnight in the editor's
+    time zone converted to UTC (so possibly 23:00 the day before); +12h lands safely on the right day. */
+export function sbDateOnly(v?: string) {
+  if (!v) return undefined
+  const ms = Date.parse(sbDate(v)) + 12 * 3600_000
+  if (Number.isNaN(ms)) return undefined
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin' }).format(new Date(ms)) // en-CA → YYYY-MM-DD
+}
+
 type EventContent = {
   _uid: string; title?: string; start?: string; end?: string; category?: string; location?: string
   summary?: string; description?: string; image?: SbAsset; registration_link?: SbLink; registration_label?: string
@@ -30,7 +39,7 @@ export function toEventItem(content: EventContent, slug: string, fallbackTitle =
     registrationUrl: href === '#' ? undefined : href,
     registrationLabel: content.registration_label,
     repeat: (content.repeat as Repeat) || 'none',
-    repeatUntil: content.repeat_until?.slice(0, 10) || undefined,
+    repeatUntil: sbDateOnly(content.repeat_until),
   }
 }
 
