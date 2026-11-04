@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { StoryblokStory } from '@storyblok/react/rsc'
 import { getStory } from '@/lib/storyblok'
 
-export const revalidate = 60
+export const revalidate = 60 // also refreshes the "Upcoming events" section
 
 export async function generateMetadata(): Promise<Metadata> {
   const story = await getStory('home')

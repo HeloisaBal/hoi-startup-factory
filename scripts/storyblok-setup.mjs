@@ -12,9 +12,13 @@
  *   npm run storyblok:setup                 # safe: never overwrites existing stories
  *   npm run storyblok:setup -- --reset      # also overwrites "home" and "site-settings" with the demo content
  *   npm run storyblok:setup -- --remove-demo  # also deletes Storyblok's starter blocks (teaser, grid, feature)
+ *
+ * It also creates the "Events" folder with weekly demo events (if missing), adds an "Upcoming events"
+ * section to Home and an "Events" menu link to Site settings (if missing). --reset also refreshes the demo events' dates.
  */
 import { randomUUID } from 'node:crypto'
 import { components } from './storyblok-schema.mjs'
+import { demoEvents } from './demo-events.mjs'
 
 const { STORYBLOK_SPACE_ID: space, STORYBLOK_PERSONAL_TOKEN: token, STORYBLOK_REGION: region = 'eu' } = process.env
 if (!space || !token) {
@@ -158,7 +162,64 @@ async function upsertStory({ name, slug, content, path }) {
 await upsertStory({ name: 'Home', slug: 'home', content: homeContent, path: '/' })
 await upsertStory({ name: 'Site settings', slug: 'site-settings', content: settingsContent })
 
-/* ---------- 3. optional: remove Storyblok starter blocks ---------- */
+/* ---------- 3. events ---------- */
+// Storyblok datetime fields are UTC "YYYY-MM-DD HH:mm"
+const sbDate = (iso) => iso.slice(0, 16).replace('T', ' ')
+
+async function findStory(fullSlug) {
+  const { stories } = await api('GET', `/stories?with_slug=${encodeURIComponent(fullSlug)}`)
+  return stories?.[0]
+}
+
+let folder = await findStory('events')
+if (!folder) {
+  ;({ story: folder } = await api('POST', '/stories', {
+    story: { name: 'Events', slug: 'events', is_folder: true, default_root: 'event' },
+  }))
+  console.log('  created folder events/')
+}
+
+for (const e of demoEvents) {
+  const content = {
+    component: 'event', title: e.title, start: sbDate(e.start), end: sbDate(e.end), category: e.category,
+    location: e.location, summary: e.summary, description: e.description,
+    registration_link: url(e.registrationUrl), registration_label: e.registrationLabel,
+  }
+  const existing = await findStory(`events/${e.slug}`)
+  if (existing && !RESET) continue
+  const payload = { story: { name: e.title, slug: e.slug, parent_id: folder.id, content }, publish: 1 }
+  if (existing) await api('PUT', `/stories/${existing.id}`, { ...payload, force_update: 1 })
+  else await api('POST', '/stories', payload)
+  console.log(`  ${existing ? 'reset' : 'created'} event  ${e.slug}`)
+}
+
+/* Add things to existing stories only if missing (publishes the story). */
+async function patchStory(fullSlug, change) {
+  const found = await findStory(fullSlug)
+  if (!found) return
+  const { story } = await api('GET', `/stories/${found.id}`)
+  if (!change(story.content)) return
+  await api('PUT', `/stories/${story.id}`, { story: { content: story.content }, publish: 1, force_update: 1 })
+  console.log(`  updated story  ${fullSlug}`)
+}
+
+await patchStory('home', (c) => {
+  if (!Array.isArray(c.body) || c.body.some((b) => b.component === 'upcoming_events')) return false
+  c.body.splice(1, 0, {
+    _uid: uid(), component: 'upcoming_events', eyebrow: 'Events', heading: 'Jede Woche bei hoi',
+    intro: 'Workshops, Pitch Nights und Meetups — kommen Sie vorbei.', count: '3', show_link: true,
+  })
+  return true
+})
+
+await patchStory('site-settings', (c) => {
+  if (!Array.isArray(c.nav) || c.nav.length === 0) return false
+  if (c.nav.some((l) => (l.link?.url || l.link?.cached_url) === '/events')) return false
+  c.nav.push(navLink('Events', '/events'))
+  return true
+})
+
+/* ---------- 4. optional: remove Storyblok starter blocks ---------- */
 if (REMOVE_DEMO) {
   for (const name of ['teaser', 'grid', 'feature']) {
     const found = byName.get(name)

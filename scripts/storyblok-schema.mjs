@@ -31,7 +31,7 @@ const ICONS = [
 ]
 
 export const SECTION_TYPES = [
-  'hero', 'audience_hero', 'image_hero', 'feature_grid', 'stats', 'text_image', 'logo_wall', 'cta',
+  'hero', 'audience_hero', 'image_hero', 'feature_grid', 'stats', 'text_image', 'logo_wall', 'cta', 'upcoming_events',
 ]
 
 export const components = [
@@ -170,7 +170,39 @@ export const components = [
     }),
   },
 
+  {
+    name: 'upcoming_events', display_name: 'Upcoming events', is_nestable: true, is_root: false, preview_field: 'heading',
+    schema: ordered({
+      eyebrow: text('Eyebrow', { max_length: 40, default_value: 'Events' }),
+      heading: text('Heading', { max_length: 80, default_value: 'Nächste Events' }),
+      intro: textarea('Intro', { max_length: 240 }),
+      count: { type: 'number', display_name: 'How many events (1–6)', default_value: '3', min_value: 1, max_value: 6,
+        description: 'Shows the next events automatically, by date. Edit events in the “Events” folder.' },
+      show_link: { type: 'boolean', display_name: 'Show “Alle Events” link', default_value: true },
+    }),
+  },
+
   /* ---------------- content types (one per story) ---------------- */
+  {
+    name: 'event', display_name: 'Event', is_root: true, is_nestable: false, preview_field: 'title',
+    schema: ordered({
+      title: text('Title', { required: true, max_length: 80 }),
+      start: { type: 'datetime', display_name: 'Starts', required: true,
+        description: 'Past events move to “Vergangene Events” automatically.' },
+      end: { type: 'datetime', display_name: 'Ends' },
+      category: option('Type', [
+        ['Workshop', 'workshop'], ['Pitch Night', 'pitch'], ['Meetup', 'meetup'],
+        ['Infoveranstaltung', 'info'], ['Demo Day', 'demoday'],
+      ], 'meetup'),
+      location: text('Location', { default_value: 'hoi startup factory, Arberger Hafendamm 1, Bremen',
+        description: 'Address, or “Online (Zoom)”.' }),
+      summary: textarea('Short description', { max_length: 200, description: 'Shown on the event cards.' }),
+      description: textarea('Full description', { description: 'Shown on the event page. Empty line = new paragraph.' }),
+      image: image('Image', { description: 'Optional. Without a photo the card shows the hoi gradient.' }),
+      registration_link: link('Sign-up link', { description: 'Sign-up form or email. Empty = no button.' }),
+      registration_label: text('Button text', { max_length: 28, default_value: 'Jetzt anmelden' }),
+    }),
+  },
   {
     name: 'page', display_name: 'Page', is_root: true, is_nestable: false,
     schema: ordered({
