@@ -1,14 +1,18 @@
 import Link from 'next/link'
+import { storyblokEditable, type SbBlokData } from '@storyblok/react/rsc'
 import { SectionHeading, Icon } from '../ui'
+import { sbHref } from '@/lib/storyblok-helpers'
 
-export function FeatureGrid({ eyebrow, heading, intro, items }: any) {
+export function FeatureGrid({ blok }: { blok: SbBlokData & Record<string, any> }) {
+  const { eyebrow, heading, intro, items } = blok
   return (
-    <section className="py-20 md:py-28">
+    <section {...storyblokEditable(blok)} className="py-20 md:py-28">
       <div className="container-x">
         <SectionHeading eyebrow={eyebrow} heading={heading} intro={intro} />
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {items?.map((item: any) => {
+            const href = sbHref(item.link)
             const Card = (
               <div className="group h-full rounded-[var(--radius-card)] border border-line bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg">
                 <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-600 group-hover:text-white">
@@ -16,7 +20,7 @@ export function FeatureGrid({ eyebrow, heading, intro, items }: any) {
                 </div>
                 <h3 className="text-lg font-semibold leading-snug">{item.title}</h3>
                 {item.body && <p className="mt-3 text-muted leading-relaxed">{item.body}</p>}
-                {item.href && (
+                {href !== '#' && (
                   <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
                     Mehr erfahren
                     <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -24,9 +28,9 @@ export function FeatureGrid({ eyebrow, heading, intro, items }: any) {
                 )}
               </div>
             )
-            return item.href
-              ? <Link key={item._key} href={item.href}>{Card}</Link>
-              : <div key={item._key}>{Card}</div>
+            return href !== '#'
+              ? <Link key={item._uid} {...storyblokEditable(item)} href={href}>{Card}</Link>
+              : <div key={item._uid} {...storyblokEditable(item)}>{Card}</div>
           })}
         </div>
       </div>

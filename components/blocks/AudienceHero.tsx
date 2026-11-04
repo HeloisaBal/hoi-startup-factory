@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { urlFor } from '@/sanity/lib/image'
+import { storyblokEditable, type SbBlokData } from '@storyblok/react/rsc'
+import { sbHref, sbImage } from '@/lib/storyblok-helpers'
 
 /* ---------- icons ---------- */
 const icons: Record<string, React.ReactNode> = {
@@ -57,9 +58,10 @@ function Icon({ name }: { name?: string }) {
 }
 
 /* ---------- block ---------- */
-export function AudienceHero({ eyebrow, question, subtext, cards }: any) {
+export function AudienceHero({ blok }: { blok: SbBlokData & Record<string, any> }) {
+  const { eyebrow, question, subtext, cards } = blok
   return (
-    <section className="brand-gradient relative overflow-hidden text-white">
+    <section {...storyblokEditable(blok)} className="brand-gradient relative overflow-hidden text-white">
       <div className="container-x relative z-10 pt-20 pb-32 md:pt-24 md:pb-44 text-center">
         {eyebrow && (
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.14em] text-white/80">
@@ -81,16 +83,17 @@ export function AudienceHero({ eyebrow, question, subtext, cards }: any) {
         <div className="mt-14 flex flex-wrap justify-center gap-6">
           {cards?.map((card: any, i: number) => (
             <Link
-              key={card._key}
-              href={card.href || '#'}
+              key={card._uid}
+              {...storyblokEditable(card)}
+              href={sbHref(card.link)}
               className="group float-card relative flex h-80 w-64 flex-col overflow-hidden rounded-2xl bg-white text-left text-ink shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               style={{ animationDelay: `${i * 0.9}s` }}
             >
               <div className="relative h-36 w-full shrink-0 bg-brand-50">
-                {card.image ? (
+                {sbImage(card.image) ? (
                   <img
-                    src={urlFor(card.image).width(500).height(300).fit('crop').url()}
-                    alt={card.image.alt || ''}
+                    src={sbImage(card.image, 500, 300)!}
+                    alt={card.image?.alt || ''}
                     className="h-full w-full object-cover"
                   />
                 ) : (

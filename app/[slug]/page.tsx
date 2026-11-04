@@ -1,15 +1,25 @@
-import { client } from '@/sanity/lib/client'
-import { Sections } from '@/components/Sections'
-
-const QUERY = `*[_type == "page" && slug.current == $slug][0]{ title, sections }`
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { StoryblokStory } from '@storyblok/react/rsc'
+import { getStory } from '@/lib/storyblok'
 
 export const revalidate = 60
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const page = await client.fetch(QUERY, { slug })
-  if (!page) {
-    return <div className="container-x py-32 text-center text-muted">Seite nicht gefunden</div>
+  const story = await getStory(slug)
+  if (!story) return {}
+  return {
+    title: story.content.seo_title || story.name,
+    ...(story.content.seo_description && { description: story.content.seo_description }),
   }
-  return <Sections sections={page.sections} />
+}
+
+export default async function Page({ params }: Props) {
+  const { slug } = await params
+  const story = await getStory(slug)
+  if (!story) notFound()
+  return <StoryblokStory story={story} />
 }

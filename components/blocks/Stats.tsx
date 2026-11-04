@@ -1,6 +1,9 @@
-export function Stats({ heading, items }: any) {
+import { storyblokEditable, type SbBlokData } from '@storyblok/react/rsc'
+
+export function Stats({ blok }: { blok: SbBlokData & Record<string, any> }) {
+  const { heading, items } = blok
   return (
-    <section className="py-16 md:py-20">
+    <section {...storyblokEditable(blok)} className="py-16 md:py-20">
       <div className="container-x">
         <div className="rounded-[2rem] bg-brand-950 px-8 py-14 md:px-14 text-white">
           {heading && (
@@ -8,7 +11,7 @@ export function Stats({ heading, items }: any) {
           )}
           <dl className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {items?.map((s: any) => (
-              <div key={s._key}>
+              <div key={s._uid} {...storyblokEditable(s)}>
                 <dt className="text-4xl md:text-5xl font-bold tracking-tight text-accent-400">{s.value}</dt>
                 <dd className="mt-2 text-sm leading-relaxed text-brand-100">{s.label}</dd>
               </div>

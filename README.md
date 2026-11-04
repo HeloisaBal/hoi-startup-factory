@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# hoi startup factory — website (Storyblok version)
 
-## Getting Started
+Custom Next.js site for **hoi startup factory** (Bremen), built by GroundUp.
+This branch uses **Storyblok** as the editor. The `sanity` branch is the same site with Sanity.
 
-First, run the development server:
+> **Design stays in code, content stays with the client.** Editors pick from a fixed set of
+> pre-designed sections, fill in text/images and reorder them. New designs or layouts are developer work.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How it fits together
+
+```
+Storyblok (cloud)                         This repo (Next.js on Vercel)
+──────────────────                        ─────────────────────────────
+Stories (pages)  ── Content Delivery API ─▶ lib/storyblok.ts  getStory("home")
+  "home", "partner", …                        app/page.tsx, app/[slug]/page.tsx
+  "site-settings" (header/footer)             app/layout.tsx → Header / Footer
+Block Library (field definitions)          components/storyblok/registry.ts
+  ↑ pushed from scripts/storyblok-schema.mjs  maps block name → React component
+Visual Editor ── iframe + bridge ──────────▶ <StoryblokStory> = click-to-edit + live preview
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Path | What it is |
+|---|---|
+| `components/blocks/*.tsx` | The 8 section designs (Hero, AudienceHero, ImageHero, FeatureGrid, Stats, TextImage, LogoWall, CTA). Each reads its fields from `blok`. |
+| `components/storyblok/registry.ts` | Storyblok block name → React component. |
+| `components/storyblok/Page.tsx` | The "page" content type: renders its sections in order. |
+| `components/storyblok/SiteSettingsPreview.tsx` | What the Visual Editor shows when editing "Site settings". |
+| `components/Header.tsx`, `Footer.tsx` | Read from the "site-settings" story; fall back to hard-coded links if it's empty. |
+| `lib/storyblok.ts` | Storyblok client + `getStory(slug)`. Draft vs published is decided by `STORYBLOK_VERSION`. |
+| `lib/storyblok-helpers.ts` | `sbImage()` (resized image URLs) and `sbHref()` (link field → href). |
+| `lib/settings.ts` | Converts the settings story into the simple shape Header/Footer use. |
+| `scripts/storyblok-schema.mjs` | **The Block Library as code**: every block and its fields, limits and help texts. |
+| `scripts/storyblok-setup.mjs` | Pushes that schema to a space and seeds demo "home" + "site-settings" stories. |
+| `app/api/revalidate/route.ts` | Webhook: refreshes the live site when something is published. |
+| `app/globals.css` | Brand tokens (purple `#9A00FF`, blue `#003EFE`, teal `#00D7B8`), gradient, marquee. |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Set up from scratch (≈15 min)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Install:** `npm install`
+2. **Tokens.** Copy `.env.example` to `.env.local` and fill in:
+   - `STORYBLOK_ACCESS_TOKEN`: Storyblok → Settings → Access Tokens → *Preview* token.
+   - `STORYBLOK_SPACE_ID`: Settings → Space.
+   - `STORYBLOK_PERSONAL_TOKEN`: your avatar → My account → Personal access tokens.
+3. **Create the blocks and demo content.** On a brand-new space, run:
+   ```bash
+   npm run storyblok:setup -- --reset --remove-demo
+   ```
+   This replaces Storyblok's starter "Home" with the demo homepage and deletes the starter teaser/grid/feature blocks. Later, run `npm run storyblok:setup` with no flags after editing `storyblok-schema.mjs`. It updates the blocks and never touches existing content.
+4. **Run locally over HTTPS** (the Visual Editor requires it): `npm run dev:https` → https://localhost:3000
+5. **Point the Visual Editor at it.** Storyblok → Settings → Visual Editor → Location: `https://localhost:3000/`.
+   - On the "Home" story → Config, set **Real path** to `/` (the setup script tries to do this).
+   - On "Site settings", set the Real path to `/site-settings`.
 
-## Learn More
+## Deploy (Vercel)
 
-To learn more about Next.js, take a look at the following resources:
+Use **two environments**, which is Storyblok's recommended setup:
+- **Production** (the public site): `STORYBLOK_VERSION=published`.
+- **Preview** (what the Visual Editor loads): `STORYBLOK_VERSION=draft`. Put this deployment's URL in Settings → Visual Editor.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Then add a webhook: Settings → Webhooks → triggers *Story published* and *unpublished* → `https://<production-domain>/api/revalidate?secret=<STORYBLOK_WEBHOOK_SECRET>`. Without it, published changes still appear within 60 seconds.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Adding a new section type
 
-## Deploy on Vercel
+1. Create `components/blocks/MyBlock.tsx` reading from `blok`, with `{...storyblokEditable(blok)}` on the root.
+2. Add it to `components/storyblok/registry.ts`.
+3. Add its fields to `scripts/storyblok-schema.mjs`, and its name to `SECTION_TYPES`.
+4. Run `npm run storyblok:setup`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Known gaps / TODO
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The **EN** button in the header does nothing yet. Storyblok has field-level translations for when it's needed.
+- Blocks are typed loosely (`any`), so field names aren't type-checked.
+- Images are plain `<img>` (served resized by Storyblok's image service); there is no `next/image`.
+- Pages linked in the nav (`/ueber-uns`, `/partner`, `/programm`, `/kontakt`, …) don't exist as stories yet. Create them in Storyblok with matching slugs.
