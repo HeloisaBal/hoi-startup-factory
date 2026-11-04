@@ -1,5 +1,5 @@
 import { urlFor } from '@/sanity/lib/image'
-import { Button } from '../ui'
+import { stegaClean } from 'next-sanity'
 
 export function Hero({ eyebrow, heading, headingMark, subheading, buttons, image }: any) {
   return (
@@ -28,13 +28,13 @@ export function Hero({ eyebrow, heading, headingMark, subheading, buttons, image
         {buttons?.length > 0 && (
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             {buttons.map((b: any) =>
-              b.style === 'outline' ? (
-                <a key={b._key} href={b.href || '#'}
+              stegaClean(b.style) === 'outline' ? (
+                <a key={b._key} href={stegaClean(b.href) || '#'}
                   className="inline-flex items-center rounded-full border-2 border-white/70 px-7 py-3.5 text-base font-semibold text-white transition hover:bg-white/10">
                   {b.label}
                 </a>
               ) : (
-                <a key={b._key} href={b.href || '#'}
+                <a key={b._key} href={stegaClean(b.href) || '#'}
                   className="inline-flex items-center rounded-full bg-white px-7 py-3.5 text-base font-semibold text-brand-700 transition hover:-translate-y-0.5 hover:shadow-xl">
                   {b.label}
                 </a>

@@ -2,22 +2,31 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { stegaClean } from 'next-sanity'
 
-const nav = [
+import type { Link as NavLink, SiteSettings } from '@/sanity/lib/types'
+
+/* Used until "Site settings" is filled in the Studio. */
+const fallbackNav: NavLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Partner', href: '/partner' },
 ]
+const fallbackButton = { label: 'Kontakt', href: '/kontakt' }
 
-export function Header() {
+export function Header({ settings }: { settings?: SiteSettings }) {
   const [open, setOpen] = useState(false)
+
+  const nav: NavLink[] = settings?.nav?.length ? settings.nav : fallbackNav
+  const button = settings?.headerButton?.label ? settings.headerButton : fallbackButton
+  const buttonHref = stegaClean(button.href) || '#'
 
   return (
     <header className="sticky top-0 z-50 border-b border-line/60 bg-white/90 backdrop-blur-md">
       <div className="container-x flex items-center justify-between py-4">
         <nav className="hidden items-center gap-9 md:flex">
           {nav.map((n) => (
-            <Link key={n.href} href={n.href}
+            <Link key={n._key ?? n.href} href={stegaClean(n.href) || '#'}
               className="text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:text-brand-500">
               {n.label}
             </Link>
@@ -29,10 +38,11 @@ export function Header() {
         </Link>
 
         <div className="hidden items-center gap-5 md:flex">
+          {/* TODO: language switch is not built yet — the button does nothing */}
           <button className="text-sm font-medium text-muted transition-colors hover:text-ink">EN</button>
-          <Link href="/kontakt"
+          <Link href={buttonHref}
             className="rounded-full bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 hover:-translate-y-0.5">
-            Kontakt
+            {button.label}
           </Link>
         </div>
 
@@ -48,14 +58,14 @@ export function Header() {
         <div className="border-t border-line bg-white md:hidden">
           <nav className="container-x flex flex-col gap-1 py-4">
             {nav.map((n) => (
-              <Link key={n.href} href={n.href} onClick={() => setOpen(false)}
+              <Link key={n._key ?? n.href} href={stegaClean(n.href) || '#'} onClick={() => setOpen(false)}
                 className="py-2.5 text-base font-semibold uppercase tracking-wide">
                 {n.label}
               </Link>
             ))}
-            <Link href="/kontakt"
+            <Link href={buttonHref} onClick={() => setOpen(false)}
               className="mt-3 rounded-full bg-brand-500 px-6 py-3 text-center text-sm font-semibold text-white">
-              Kontakt
+              {button.label}
             </Link>
           </nav>
         </div>

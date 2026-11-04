@@ -1,4 +1,4 @@
-import { Button } from '../ui'
+import { stegaClean } from 'next-sanity'
 
 export function CTA({ eyebrow, heading, body, buttonLabel, buttonHref }: any) {
   return (
@@ -16,7 +16,7 @@ export function CTA({ eyebrow, heading, body, buttonLabel, buttonHref }: any) {
             {body && <p className="mt-5 text-lg leading-relaxed text-brand-50">{body}</p>}
             {buttonLabel && (
               <div className="mt-9 flex justify-center">
-                <a href={buttonHref || '#'}
+                <a href={stegaClean(buttonHref) || '#'}
                   className="inline-flex items-center rounded-full bg-white px-7 py-3.5 text-base font-semibold text-brand-700 transition hover:-translate-y-0.5 hover:shadow-lg">
                   {buttonLabel}
                 </a>

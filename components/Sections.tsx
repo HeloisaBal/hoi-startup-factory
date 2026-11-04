@@ -1,3 +1,7 @@
+'use client'
+
+import { createDataAttribute } from 'next-sanity'
+import { useOptimistic } from 'next-sanity/hooks'
 import { Hero } from './blocks/Hero'
 import { AudienceHero } from './blocks/AudienceHero'
 import { ImageHero } from './blocks/ImageHero'
@@ -19,14 +23,42 @@ const blocks: Record<string, any> = {
   cta: CTA,
 }
 
-export function Sections({ sections }: { sections?: any[] }) {
+type Props = { documentId: string; documentType: string; sections?: any[] }
+
+export function Sections({ documentId, documentType, sections: initial }: Props) {
+  // In the Presentation tool, editors can drag sections to reorder them ON the page.
+  // useOptimistic shows the new order instantly while the change is saved.
+  const sections = useOptimistic<any[] | undefined, any>(initial, (current, action) => {
+    if (action.id === documentId && action.document?.sections) {
+      return action.document.sections.map(
+        (s: any) => current?.find((c) => c._key === s._key) ?? s
+      )
+    }
+    return current
+  })
+
   if (!sections) return null
+
   return (
-    <>
+    <div
+      data-sanity={createDataAttribute({ id: documentId, type: documentType, path: 'sections' }).toString()}
+    >
       {sections.map((section) => {
         const Block = blocks[section._type]
-        return Block ? <Block key={section._key} {...section} /> : null
+        if (!Block) return null
+        return (
+          <div
+            key={section._key}
+            data-sanity={createDataAttribute({
+              id: documentId,
+              type: documentType,
+              path: `sections[_key=="${section._key}"]`,
+            }).toString()}
+          >
+            <Block {...section} />
+          </div>
+        )
       })}
-    </>
+    </div>
   )
 }

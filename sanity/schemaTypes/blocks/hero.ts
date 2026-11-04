@@ -36,7 +36,11 @@ export const hero = defineType({
     }),
     defineField({
       name: 'image', type: 'image', options: { hotspot: true },
-      fields: [defineField({ name: 'alt', title: 'Alt text', type: 'string' })],
+      fields: [defineField({
+        name: 'alt', title: 'Alt text', type: 'string',
+        description: 'Describe the image in a few words — read aloud to blind visitors and used by Google.',
+        validation: (r) => r.custom((alt, ctx) => ((ctx.parent as { asset?: unknown })?.asset && !alt ? 'Please describe the image' : true)),
+      })],
     }),
   ],
   preview: {

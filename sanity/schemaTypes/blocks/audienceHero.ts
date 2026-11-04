@@ -56,7 +56,11 @@ export const audienceHero = defineType({
               type: 'image',
               options: { hotspot: true },
               description: 'Shown at the top of the card. Falls back to the icon below if left empty.',
-              fields: [defineField({ name: 'alt', title: 'Alt text', type: 'string' })],
+              fields: [defineField({
+        name: 'alt', title: 'Alt text', type: 'string',
+        description: 'Describe the image in a few words — read aloud to blind visitors and used by Google.',
+        validation: (r) => r.custom((alt, ctx) => ((ctx.parent as { asset?: unknown })?.asset && !alt ? 'Please describe the image' : true)),
+      })],
             }),
             defineField({
               name: 'icon',

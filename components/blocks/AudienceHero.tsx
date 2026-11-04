@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { stegaClean } from 'next-sanity'
 import { urlFor } from '@/sanity/lib/image'
 
 /* ---------- icons ---------- */
@@ -82,7 +83,7 @@ export function AudienceHero({ eyebrow, question, subtext, cards }: any) {
           {cards?.map((card: any, i: number) => (
             <Link
               key={card._key}
-              href={card.href || '#'}
+              href={stegaClean(card.href) || '#'}
               className="group float-card relative flex h-80 w-64 flex-col overflow-hidden rounded-2xl bg-white text-left text-ink shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               style={{ animationDelay: `${i * 0.9}s` }}
             >
@@ -95,7 +96,7 @@ export function AudienceHero({ eyebrow, question, subtext, cards }: any) {
                   />
                 ) : (
                   <span className="flex h-full w-full items-center justify-center text-brand-600">
-                    <Icon name={card.icon} />
+                    <Icon name={stegaClean(card.icon)} />
                   </span>
                 )}
                 <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand-600 shadow-md transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">

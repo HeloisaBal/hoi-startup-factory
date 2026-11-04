@@ -9,7 +9,11 @@ import { textImage } from './blocks/textImage'
 import { logoWall } from './blocks/logoWall'
 import { cta } from './blocks/cta'
 import { page } from './documents/page'
+import { siteSettings } from './documents/siteSettings'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [page, hero, audienceHero, imageHero, featureGrid, stats, textImage, logoWall, cta],
+  types: [siteSettings, page, hero, audienceHero, imageHero, featureGrid, stats, textImage, logoWall, cta],
 }
+
+/** Document types that exist exactly once (no "create new", no delete/duplicate). */
+export const singletonTypes = new Set(['siteSettings'])

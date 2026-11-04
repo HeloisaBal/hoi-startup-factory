@@ -1,12 +1,21 @@
-import { client } from '@/sanity/lib/client'
+import type { Metadata } from 'next'
 import { Sections } from '@/components/Sections'
+import { sanityFetch } from '@/sanity/lib/live'
+import type { PageData } from '@/sanity/lib/types'
+import { PAGE_QUERY } from '@/sanity/lib/queries'
 
-const QUERY = `*[_type == "page" && slug.current == "home"][0]{ title, sections }`
-
-export const revalidate = 60
+export async function generateMetadata(): Promise<Metadata> {
+  const { data } = await sanityFetch({ query: PAGE_QUERY, params: { slug: 'home' }, stega: false })
+  const page = data as PageData | null
+  return {
+    ...(page?.seoTitle && { title: page.seoTitle }),
+    ...(page?.seoDescription && { description: page.seoDescription }),
+  }
+}
 
 export default async function Home() {
-  const page = await client.fetch(QUERY)
+  const { data } = await sanityFetch({ query: PAGE_QUERY, params: { slug: 'home' } })
+  const page = data as PageData | null
   if (!page) {
     return (
       <div className="container-x py-32 text-center">
@@ -16,5 +25,5 @@ export default async function Home() {
       </div>
     )
   }
-  return <Sections sections={page.sections} />
+  return <Sections documentId={page._id} documentType={page._type} sections={page.sections} />
 }

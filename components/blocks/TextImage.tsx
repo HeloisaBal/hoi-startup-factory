@@ -1,10 +1,11 @@
+import { stegaClean } from 'next-sanity'
 import { urlFor } from '@/sanity/lib/image'
 import { SectionHeading } from '../ui'
 
 export function TextImage({ eyebrow, heading, body, bullets, image, imageSide, background }: any) {
-  const flip = imageSide === 'left'
+  const flip = stegaClean(imageSide) === 'left'
   return (
-    <section className={background === 'surface' ? 'bg-surface py-20 md:py-28' : 'py-20 md:py-28'}>
+    <section className={stegaClean(background) === 'surface' ? 'bg-surface py-20 md:py-28' : 'py-20 md:py-28'}>
       <div className="container-x">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <div className={flip ? 'lg:order-2' : ''}>
