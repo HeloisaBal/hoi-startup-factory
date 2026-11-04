@@ -1,16 +1,17 @@
 import Link from 'next/link'
 import { SectionHeading } from '@/components/ui'
 import { EventCard } from './EventCard'
-import type { EventItem } from '@/lib/events'
+import { splitEvents, type EventItem } from '@/lib/events'
 
-/** Homepage (or any page) section: the next few events, picked automatically by date. */
+/** Homepage (or any page) section: the next few events, picked automatically by date.
+    Pass all events; repeating ones are shown at their next date. */
 export function UpcomingEventsSection({
   eyebrow, heading, intro, events, count = 3, showLink = true, editable,
 }: {
   eyebrow?: string; heading?: string; intro?: string; events: EventItem[]
   count?: number; showLink?: boolean; editable?: Record<string, string>
 }) {
-  const shown = events.slice(0, Math.max(1, Math.min(count || 3, 6)))
+  const shown = splitEvents(events).upcoming.slice(0, Math.max(1, Math.min(count || 3, 6)))
   return (
     <section {...editable} className="py-20 md:py-28">
       <div className="container-x">

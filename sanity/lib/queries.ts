@@ -1,14 +1,15 @@
 // GROQ queries used by the site. (Plain strings: no TypeGen set up, so results are untyped.)
 
-const EVENT_FIELDS = `_id, title, "slug": slug.current, start, end, category, location, summary, description, image, registrationUrl, registrationLabel`
+const EVENT_FIELDS = `_id, title, "slug": slug.current, start, end, category, location, summary, description, image, registrationUrl, registrationLabel, repeat, repeatUntil`
 
 // "Upcoming events" sections get their events attached here, so the page needs one fetch.
+// Repeating events are always included; the site works out their next dates (lib/events.ts).
 export const PAGE_QUERY = `*[_type == "page" && slug.current == $slug][0]{
   _id, _type, title, seoTitle, seoDescription,
   sections[]{
     ...,
     _type == "upcomingEvents" => {
-      "events": *[_type == "event" && defined(slug.current) && dateTime(coalesce(end, start)) >= dateTime(now())] | order(start asc)[0...6]{ ${EVENT_FIELDS} }
+      "events": *[_type == "event" && defined(slug.current) && defined(start) && (coalesce(repeat, "none") != "none" || dateTime(coalesce(end, start)) >= dateTime(now()))] | order(start asc)[0...30]{ ${EVENT_FIELDS} }
     }
   }
 }`

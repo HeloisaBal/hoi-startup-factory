@@ -1,6 +1,7 @@
 /**
- * Demo events for the client demo: one event a week, starting next week, plus two past ones.
- * Dates are generated relative to the day you run the seed, so the demo always has upcoming events.
+ * Demo events for the client demo: one-off events over the coming weeks, two past ones, and three
+ * repeating events (weekly breakfast, biweekly office hours, monthly pitch night) so the demo
+ * always has upcoming events, however long ago the seed ran.
  */
 
 /** Bremen local date + time → ISO string in UTC (handles summer/winter time). */
@@ -25,7 +26,7 @@ function thursday(weeks) {
 const HOI = 'hoi startup factory, Arberger Hafendamm 1, Bremen'
 
 const list = [
-  { w: -2, from: '18:00', to: '20:00', slug: 'office-hours-investoren', category: 'meetup',
+  { w: -2, from: '18:00', to: '20:00', slug: 'office-hours-investoren', category: 'meetup', repeat: 'biweekly',
     title: 'Office Hours mit Investoren',
     summary: '15-Minuten-Gespräche mit Business Angels aus der Region.',
     description: 'Bringen Sie Ihre Fragen zu Finanzierung, Bewertung und Term Sheets mit.\n\nJedes Team bekommt ein 15-minütiges Gespräch mit einem Business Angel aus unserem Netzwerk.' },
@@ -33,12 +34,12 @@ const list = [
     title: 'Workshop: Business Model Canvas',
     summary: 'Vom Forschungsergebnis zum Geschäftsmodell auf einer Seite.',
     description: 'In diesem praktischen Workshop arbeiten Sie mit dem Business Model Canvas an Ihrer eigenen Idee.\n\nFür Forschende und Gründungsteams in der frühen Phase.' },
-  { w: 0, from: '18:30', to: '21:00', slug: 'pitch-night-science-startups', category: 'pitch',
+  { w: 0, from: '18:30', to: '21:00', slug: 'pitch-night-science-startups', category: 'pitch', repeat: 'monthly',
     title: 'Pitch Night: Science Start-ups',
     summary: 'Fünf Teams aus Bremer Hochschulen pitchen vor Investoren und Publikum.',
     description: 'Fünf Science Start-ups stellen ihre Ideen in jeweils fünf Minuten vor. Danach Feedback von unserer Jury und Networking bei Getränken.\n\nDer Eintritt ist frei, die Plätze sind begrenzt.',
     register: 'mailto:team@hoi-startup-factory.de?subject=Anmeldung%20Pitch%20Night' },
-  { w: 1, from: '08:30', to: '10:00', slug: 'founders-breakfast', category: 'meetup',
+  { w: -3, from: '08:30', to: '10:00', slug: 'founders-breakfast', category: 'meetup', repeat: 'weekly',
     title: "Founders' Breakfast",
     summary: 'Kaffee, Croissants und ehrlicher Austausch unter Gründer:innen.',
     description: 'Ein lockeres Frühstück für alle, die gründen oder gründen wollen. Keine Vorträge, nur Gespräche.' },
@@ -76,5 +77,6 @@ export const demoEvents = list.map((e, i) => {
     description: e.description,
     registrationUrl: e.register ?? 'mailto:team@hoi-startup-factory.de',
     registrationLabel: 'Jetzt anmelden',
+    repeat: e.repeat ?? 'none',
   }
 })

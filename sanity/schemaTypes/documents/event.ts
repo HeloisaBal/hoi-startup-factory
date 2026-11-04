@@ -1,5 +1,5 @@
 import { defineType, defineField } from 'sanity'
-import { EVENT_CATEGORIES } from '../../../lib/events'
+import { EVENT_CATEGORIES, REPEAT_OPTIONS } from '../../../lib/events'
 
 const fmt = (iso?: string) =>
   iso ? new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso)) : ''
@@ -19,7 +19,7 @@ export const event = defineType({
     defineField({
       name: 'start', title: 'Starts', type: 'datetime',
       options: { timeStep: 15 },
-      description: 'Bremen time. Past events move to “Vergangene Events” automatically.',
+      description: 'Bremen time. For a repeating event: the first date. Past events move to “Vergangene Events” automatically.',
       validation: (r) => r.required(),
     }),
     defineField({
@@ -28,6 +28,22 @@ export const event = defineType({
         r.custom((end, ctx) => {
           const start = (ctx.document as { start?: string } | undefined)?.start
           return end && start && end <= start ? 'The end must be after the start' : true
+        }),
+    }),
+    defineField({
+      name: 'repeat', title: 'Repeats', type: 'string',
+      options: { list: REPEAT_OPTIONS, layout: 'radio' },
+      initialValue: 'none',
+      description: 'For regular events: enter it once and the site always shows the next dates.',
+    }),
+    defineField({
+      name: 'repeatUntil', title: 'Repeats until', type: 'date',
+      description: 'Optional. Leave empty to keep repeating.',
+      hidden: ({ document }) => !document?.repeat || document.repeat === 'none',
+      validation: (r) =>
+        r.custom((until, ctx) => {
+          const start = (ctx.document as { start?: string } | undefined)?.start
+          return until && start && until < start.slice(0, 10) ? 'Must be after the first date' : true
         }),
     }),
     defineField({
@@ -70,7 +86,11 @@ export const event = defineType({
     { title: 'Date, oldest first', name: 'startAsc', by: [{ field: 'start', direction: 'asc' }] },
   ],
   preview: {
-    select: { title: 'title', start: 'start', media: 'image' },
-    prepare: ({ title, start, media }) => ({ title, subtitle: fmt(start), media }),
+    select: { title: 'title', start: 'start', repeat: 'repeat', media: 'image' },
+    prepare: ({ title, start, repeat, media }) => ({
+      title,
+      subtitle: repeat && repeat !== 'none' ? `${REPEAT_OPTIONS.find((o) => o.value === repeat)?.title} · from ${fmt(start)}` : fmt(start),
+      media,
+    }),
   },
 })

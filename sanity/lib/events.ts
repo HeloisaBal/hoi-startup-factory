@@ -1,6 +1,6 @@
 import { stegaClean } from 'next-sanity'
 import { urlFor } from './image'
-import type { EventItem } from '@/lib/events'
+import type { EventItem, Repeat } from '@/lib/events'
 
 /* Sanity event document → EventItem. Values used in logic (dates, links, type) are stega-cleaned
    so preview mode's invisible edit markers can't break date parsing or comparisons. */
@@ -8,6 +8,7 @@ export type SanityEvent = {
   _id: string; title?: string; slug?: string; start?: string; end?: string; category?: string
   location?: string; summary?: string; description?: string
   image?: { asset?: unknown; alt?: string }; registrationUrl?: string; registrationLabel?: string
+  repeat?: string; repeatUntil?: string
 }
 
 export function toEventItem(e: SanityEvent, imageWidth = 800, imageHeight = 450): EventItem {
@@ -25,5 +26,7 @@ export function toEventItem(e: SanityEvent, imageWidth = 800, imageHeight = 450)
     imageAlt: e.image?.alt,
     registrationUrl: stegaClean(e.registrationUrl),
     registrationLabel: e.registrationLabel,
+    repeat: (stegaClean(e.repeat) as Repeat) || 'none',
+    repeatUntil: stegaClean(e.repeatUntil) || undefined,
   }
 }

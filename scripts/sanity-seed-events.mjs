@@ -38,6 +38,7 @@ for (const e of demoEvents) {
     description: e.description,
     registrationUrl: e.registrationUrl,
     registrationLabel: e.registrationLabel,
+    repeat: e.repeat,
   })
 }
 await tx.commit()
