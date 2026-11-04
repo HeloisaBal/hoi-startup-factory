@@ -19,7 +19,6 @@ const fallback = {
     ]},
     { title: 'Über hoi', links: [
       { label: 'Über uns', href: '/ueber-uns' },
-      { label: 'Partner', href: '/partner' },
       { label: 'News', href: '/news' },
     ]},
     { title: 'Kontakt', links: [
