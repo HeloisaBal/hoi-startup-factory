@@ -67,6 +67,8 @@ No webhook is needed: `<SanityLive />` refreshes the site the moment something i
 - Demo content: `npm run sanity:seed-events` (needs `SANITY_API_WRITE_TOKEN`, role Editor, locally only). It creates or refreshes 8 weekly demo events, adds the section to the homepage and adds "Events" to the menu. It's safe to re-run.
 - Shared code (the same in the Storyblok branch): `lib/events.ts`, `components/events/*`, `scripts/demo-events.mjs`. CMS-specific code: `sanity/lib/events.ts`, `sanity/schemaTypes/documents/event.ts`.
 
+- **Repeating events:** set "Repeats" to every week, every 2 weeks or monthly (same weekday, e.g. 1st Thursday), with an optional end date. The site works out the next dates in Bremen time (`occurrences()` in `lib/events.ts`). It shows each event once, at its next date, with "Jeden Donnerstag", and the event page lists "Weitere Termine".
+
 ## Adding a new section type
 
 1. Schema: `sanity/schemaTypes/blocks/myBlock.ts`. Register it in `schemaTypes/index.ts`, and in `page.ts` (in `of` and in an insert-menu group).
