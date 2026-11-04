@@ -23,21 +23,21 @@ export function Header({ settings }: { settings?: SiteSettings }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line/60 bg-white/90 backdrop-blur-md">
-      <div className="container-x flex items-center justify-between py-4">
-        <nav className="hidden items-center gap-9 md:flex">
+      <div className="container-x flex items-center justify-between gap-6 py-4 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+        <nav className="hidden min-w-0 flex-wrap items-center gap-x-6 gap-y-1 lg:flex xl:gap-x-9">
           {nav.map((n) => (
             <Link key={n._key ?? n.href} href={stegaClean(n.href) || '#'}
-              className="text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:text-brand-500">
+              className="whitespace-nowrap text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:text-brand-500">
               {n.label}
             </Link>
           ))}
         </nav>
 
-        <Link href="/" className="md:absolute md:left-1/2 md:-translate-x-1/2">
+        <Link href="/" className="shrink-0 lg:justify-self-center">
           <img src="/logo.png" alt="hoi startup factory" className="h-10 w-auto" />
         </Link>
 
-        <div className="hidden items-center gap-5 md:flex">
+        <div className="hidden items-center justify-end gap-5 lg:flex">
           {/* TODO: language switch is not built yet — the button does nothing */}
           <button className="text-sm font-medium text-muted transition-colors hover:text-ink">EN</button>
           <Link href={buttonHref}
@@ -47,7 +47,7 @@ export function Header({ settings }: { settings?: SiteSettings }) {
         </div>
 
         <button onClick={() => setOpen(!open)} aria-label="Menü" aria-expanded={open}
-          className="md:hidden p-2 -mr-2">
+          className="lg:hidden p-2 -mr-2">
           <span className="mb-1.5 block h-0.5 w-6 bg-ink" />
           <span className="mb-1.5 block h-0.5 w-6 bg-ink" />
           <span className="block h-0.5 w-6 bg-ink" />
@@ -55,7 +55,7 @@ export function Header({ settings }: { settings?: SiteSettings }) {
       </div>
 
       {open && (
-        <div className="border-t border-line bg-white md:hidden">
+        <div className="border-t border-line bg-white lg:hidden">
           <nav className="container-x flex flex-col gap-1 py-4">
             {nav.map((n) => (
               <Link key={n._key ?? n.href} href={stegaClean(n.href) || '#'} onClick={() => setOpen(false)}
