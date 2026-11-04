@@ -4,6 +4,9 @@ import { sanityFetch } from '@/sanity/lib/live'
 import type { PageData } from '@/sanity/lib/types'
 import { PAGE_QUERY } from '@/sanity/lib/queries'
 
+// Re-check hourly so the "Upcoming events" section drops events that have passed.
+export const revalidate = 3600
+
 export async function generateMetadata(): Promise<Metadata> {
   const { data } = await sanityFetch({ query: PAGE_QUERY, params: { slug: 'home' }, stega: false })
   const page = data as PageData | null

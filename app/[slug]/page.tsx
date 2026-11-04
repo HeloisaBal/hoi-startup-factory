@@ -5,6 +5,8 @@ import { sanityFetch } from '@/sanity/lib/live'
 import type { PageData } from '@/sanity/lib/types'
 import { PAGE_QUERY, PAGE_SLUGS_QUERY } from '@/sanity/lib/queries'
 
+export const revalidate = 3600
+
 type Props = { params: Promise<{ slug: string }> }
 
 /* Pre-build every page at deploy time; new pages created later are built on first visit. */

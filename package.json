@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sanity:seed-events": "node --env-file=.env.local scripts/sanity-seed-events.mjs"
   },
   "dependencies": {
+    "@sanity/client": "^8.14.1",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^5.31.1",
     "next": "16.3.0",

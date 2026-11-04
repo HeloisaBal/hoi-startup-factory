@@ -7,6 +7,10 @@ export const structure: StructureResolver = (S) =>
     .title('Content')
     .items([
       S.documentTypeListItem('page').title('Pages'),
+      S.listItem()
+        .title('Events')
+        .schemaType('event')
+        .child(S.documentTypeList('event').title('Events').defaultOrdering([{ field: 'start', direction: 'desc' }])),
       S.divider(),
       S.listItem()
         .title('Site settings')

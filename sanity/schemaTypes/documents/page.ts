@@ -41,6 +41,7 @@ export const page = defineType({
         defineArrayMember({ type: 'textImage' }),
         defineArrayMember({ type: 'logoWall' }),
         defineArrayMember({ type: 'cta' }),
+        defineArrayMember({ type: 'upcomingEvents' }),
       ],
       options: {
         insertMenu: {
@@ -48,6 +49,7 @@ export const page = defineType({
           groups: [
             { name: 'hero', title: 'Top of page (hero)', of: ['hero', 'audienceHero', 'imageHero'] },
             { name: 'content', title: 'Content', of: ['featureGrid', 'textImage', 'stats'] },
+            { name: 'events', title: 'Events', of: ['upcomingEvents'] },
             { name: 'other', title: 'Logos & call to action', of: ['logoWall', 'cta'] },
           ],
         },

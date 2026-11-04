@@ -10,6 +10,7 @@ import { Stats } from './blocks/Stats'
 import { TextImage } from './blocks/TextImage'
 import { LogoWall } from './blocks/LogoWall'
 import { CTA } from './blocks/CTA'
+import { UpcomingEvents } from './blocks/UpcomingEvents'
 
 /* Add a new block: import it, add one line here, done. */
 const blocks: Record<string, any> = {
@@ -21,6 +22,7 @@ const blocks: Record<string, any> = {
   textImage: TextImage,
   logoWall: LogoWall,
   cta: CTA,
+  upcomingEvents: UpcomingEvents,
 }
 
 type Props = { documentId: string; documentType: string; sections?: any[] }
