@@ -59,6 +59,14 @@ No webhook is needed: `<SanityLive />` refreshes the site the moment something i
 - **Site settings**: menu, header button, footer, legal links, Google defaults.
 - Nothing goes live until **Publish** is pressed.
 
+## Events
+
+- **Events** is its own list in the Studio sidebar, sorted by date. Each event has a URL at `/events/<slug>` and click-to-edit in the Presentation tab.
+- `/events` lists upcoming events as cards and past ones as a list. The split happens automatically by date and time (Bremen time), re-checked hourly.
+- The **Upcoming events** section (`upcomingEvents`) can go on any page. `PAGE_QUERY` attaches the next 6 events to it, and the editor chooses how many to show.
+- Demo content: `npm run sanity:seed-events` (needs `SANITY_API_WRITE_TOKEN`, role Editor, locally only). It creates or refreshes 8 weekly demo events, adds the section to the homepage and adds "Events" to the menu. It's safe to re-run.
+- Shared code (the same in the Storyblok branch): `lib/events.ts`, `components/events/*`, `scripts/demo-events.mjs`. CMS-specific code: `sanity/lib/events.ts`, `sanity/schemaTypes/documents/event.ts`.
+
 ## Adding a new section type
 
 1. Schema: `sanity/schemaTypes/blocks/myBlock.ts`. Register it in `schemaTypes/index.ts`, and in `page.ts` (in `of` and in an insert-menu group).
