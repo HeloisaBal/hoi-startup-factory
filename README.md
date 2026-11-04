@@ -59,6 +59,14 @@ Use **two environments**, which is Storyblok's recommended setup:
 
 Then add a webhook: Settings → Webhooks → triggers *Story published* and *unpublished* → `https://<production-domain>/api/revalidate?secret=<STORYBLOK_WEBHOOK_SECRET>`. Without it, published changes still appear within 60 seconds.
 
+## Events
+
+- Event stories live in the **Events** folder in Storyblok (content type `event`). Their URL is `/events/<slug>`, and they open in the Visual Editor like any page.
+- `/events` lists upcoming events as cards and past ones as a list. The split happens automatically by date and time (Bremen time).
+- The **Upcoming events** section (`upcoming_events`) can go on any page. It shows the next 1–6 events and loads them itself.
+- Demo content: `npm run storyblok:setup` creates the folder and 8 weekly demo events (2 in the past). It only creates them if missing; add `--reset` to regenerate their dates from today.
+- Shared code (the same in the Sanity branch): `lib/events.ts` (types, date formatting), `components/events/*`, `scripts/demo-events.mjs`. CMS-specific code: `lib/storyblok-events.ts`.
+
 ## Adding a new section type
 
 1. Create `components/blocks/MyBlock.tsx` reading from `blok`, with `{...storyblokEditable(blok)}` on the root.
