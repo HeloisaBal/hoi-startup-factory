@@ -101,7 +101,7 @@ const homeContent = {
 
 const settingsContent = {
   component: 'site_settings',
-  nav: [navLink('Home', '/'), navLink('Über uns', '/ueber-uns'), navLink('Partner', '/partner')],
+  nav: [navLink('Home', '/'), navLink('Über uns', '/ueber-uns')],
   header_button_label: 'Kontakt',
   header_button_link: url('/kontakt'),
   footer_tagline: 'Harbour of ideas — wir verbinden Wissenschaft, Wirtschaft und Gründergeist im Nordwesten.',
@@ -112,7 +112,7 @@ const settingsContent = {
       navLink('Corporate Cooperations', '/programm'), navLink('Kapital & Netzwerk', '/programm'),
     ]},
     { _uid: uid(), component: 'footer_column', title: 'Über hoi', links: [
-      navLink('Über uns', '/ueber-uns'), navLink('Partner', '/partner'), navLink('News', '/news'),
+      navLink('Über uns', '/ueber-uns'), navLink('News', '/news'),
     ]},
     { _uid: uid(), component: 'footer_column', title: 'Kontakt', links: [
       navLink('team@hoi-startup-factory.de', 'mailto:team@hoi-startup-factory.de'),

@@ -9,7 +9,6 @@ import type { Link as NavLink, SiteSettings } from '@/lib/settings'
 const fallbackNav: NavLink[] = [
   { label: 'Home', href: '/' },
   { label: 'Über uns', href: '/ueber-uns' },
-  { label: 'Partner', href: '/partner' },
   { label: 'Events', href: '/events' },
 ]
 const fallbackButton = { label: 'Kontakt', href: '/kontakt' }
