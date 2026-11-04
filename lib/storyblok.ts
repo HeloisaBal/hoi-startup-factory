@@ -1,3 +1,4 @@
+import { connection } from 'next/server'
 import { apiPlugin, storyblokInit, type ISbStoryData } from '@storyblok/react/rsc'
 import { components } from '@/components/storyblok/registry'
 
@@ -22,6 +23,9 @@ export const version: 'draft' | 'published' =
 
 /** Fetch one story by slug ("home", "partner", "site-settings"). Returns null if it doesn't exist. */
 export async function getStory(slug: string): Promise<ISbStoryData | null> {
+  // Drafts must be fetched fresh on every request, so tell Next.js not to pre-build this page.
+  // (Must happen before the Storyblok call: the Storyblok client would swallow Next's signal.)
+  if (version === 'draft') await connection()
   try {
     const { data } = await getStoryblokApi().get(
       `cdn/stories/${slug}`,
