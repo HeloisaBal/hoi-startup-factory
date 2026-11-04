@@ -2,7 +2,7 @@ import { connection } from 'next/server'
 import type { ISbStoryData } from '@storyblok/react/rsc'
 import { getStoryblokApi, version } from './storyblok'
 import { sbHref, sbImage, type SbAsset, type SbLink } from './storyblok-helpers'
-import type { EventItem } from './events'
+import type { EventItem, Repeat } from './events'
 
 /** Storyblok "Datetime" fields are stored in UTC as "2026-11-05 17:30". */
 export const sbDate = (v?: string) => (v ? `${v.trim().replace(' ', 'T')}:00Z` : '')
@@ -10,6 +10,7 @@ export const sbDate = (v?: string) => (v ? `${v.trim().replace(' ', 'T')}:00Z` :
 type EventContent = {
   _uid: string; title?: string; start?: string; end?: string; category?: string; location?: string
   summary?: string; description?: string; image?: SbAsset; registration_link?: SbLink; registration_label?: string
+  repeat?: string; repeat_until?: string
 }
 
 export function toEventItem(content: EventContent, slug: string, fallbackTitle = '', w = 800, h = 450): EventItem {
@@ -28,6 +29,8 @@ export function toEventItem(content: EventContent, slug: string, fallbackTitle =
     imageAlt: content.image?.alt ?? undefined,
     registrationUrl: href === '#' ? undefined : href,
     registrationLabel: content.registration_label,
+    repeat: (content.repeat as Repeat) || 'none',
+    repeatUntil: content.repeat_until?.slice(0, 10) || undefined,
   }
 }
 

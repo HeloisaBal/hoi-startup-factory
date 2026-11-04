@@ -188,8 +188,14 @@ export const components = [
     schema: ordered({
       title: text('Title', { required: true, max_length: 80 }),
       start: { type: 'datetime', display_name: 'Starts', required: true,
-        description: 'Past events move to “Vergangene Events” automatically.' },
+        description: 'For a repeating event: the first date. Past events move to “Vergangene Events” automatically.' },
       end: { type: 'datetime', display_name: 'Ends' },
+      repeat: option('Repeats', [
+        ['Does not repeat', 'none'], ['Every week', 'weekly'], ['Every 2 weeks', 'biweekly'],
+        ['Every month (same weekday, e.g. 1st Thursday)', 'monthly'],
+      ], 'none'),
+      repeat_until: { type: 'datetime', display_name: 'Repeats until (optional)', disable_time: true,
+        description: 'Only for repeating events. Empty = keeps repeating.' },
       category: option('Type', [
         ['Workshop', 'workshop'], ['Pitch Night', 'pitch'], ['Meetup', 'meetup'],
         ['Infoveranstaltung', 'info'], ['Demo Day', 'demoday'],

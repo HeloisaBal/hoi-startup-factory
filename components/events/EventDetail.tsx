@@ -1,9 +1,15 @@
 import Link from 'next/link'
-import { PinIcon } from './EventCard'
-import { categoryLabel, formatDate, formatTimeRange, isUpcoming, paragraphs, type EventItem } from '@/lib/events'
+import { PinIcon, RepeatIcon } from './EventCard'
+import {
+  categoryLabel, formatDate, formatShortDate, formatTimeRange, isUpcoming, nextSessions, paragraphs, repeatLabel,
+  type EventItem,
+} from '@/lib/events'
 
 export function EventDetail({ event }: { event: EventItem }) {
-  const upcoming = isUpcoming(event)
+  // Repeating events: show the next session, and the dates after it
+  const { current, later } = nextSessions(event)
+  const upcoming = isUpcoming(current)
+  const repeat = repeatLabel(event)
   return (
     <article {...event.editable}>
       <header className="brand-gradient relative overflow-hidden text-white">
@@ -15,13 +21,16 @@ export function EventDetail({ event }: { event: EventItem }) {
           <h1 className="mt-3 max-w-3xl text-4xl md:text-5xl font-extrabold leading-[1.08] tracking-tight text-balance">
             {event.title}
           </h1>
-          <div className="mt-8 flex flex-col gap-3 text-lg text-white/90 sm:flex-row sm:gap-8">
+          <div className="mt-8 flex flex-col gap-3 text-lg text-white/90 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <p>
-              <span className="font-semibold">{formatDate(event.start)}</span>
-              <br className="sm:hidden" /><span className="sm:ml-2">{formatTimeRange(event.start, event.end)}</span>
+              <span className="font-semibold">{formatDate(current.start)}</span>
+              <br className="sm:hidden" /><span className="sm:ml-2">{formatTimeRange(current.start, current.end)}</span>
             </p>
             {event.location && (
               <p className="flex items-center gap-2"><PinIcon className="h-5 w-5 shrink-0" /> {event.location}</p>
+            )}
+            {repeat && (
+              <p className="flex items-center gap-2"><RepeatIcon className="h-5 w-5 shrink-0" /> {repeat}</p>
             )}
           </div>
           {upcoming && event.registrationUrl && (
@@ -37,14 +46,30 @@ export function EventDetail({ event }: { event: EventItem }) {
       </header>
 
       <div className="container-x py-16 md:py-20">
-        <div className="mx-auto max-w-3xl">
-          {event.imageUrl && (
-            <img src={event.imageUrl} alt={event.imageAlt || ''} className="mb-12 w-full rounded-[var(--radius-card)] object-cover shadow-lg" />
-          )}
-          {event.summary && <p className="text-xl leading-relaxed text-ink">{event.summary}</p>}
-          <div className="mt-6 space-y-5 text-lg leading-relaxed text-muted">
-            {paragraphs(event.description).map((p, i) => <p key={i} className="whitespace-pre-line">{p}</p>)}
+        <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-[minmax(0,1fr)_16rem]">
+          <div>
+            {event.imageUrl && (
+              <img src={event.imageUrl} alt={event.imageAlt || ''} className="mb-12 w-full rounded-[var(--radius-card)] object-cover shadow-lg" />
+            )}
+            {event.summary && <p className="text-xl leading-relaxed text-ink">{event.summary}</p>}
+            <div className="mt-6 space-y-5 text-lg leading-relaxed text-muted">
+              {paragraphs(event.description).map((p, i) => <p key={i} className="whitespace-pre-line">{p}</p>)}
+            </div>
           </div>
+
+          {later.length > 0 && (
+            <aside className="h-fit rounded-[var(--radius-card)] border border-line bg-surface p-6">
+              <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-brand-600">Weitere Termine</h2>
+              <ul className="mt-4 space-y-3">
+                {later.map((o) => (
+                  <li key={o.id} className="text-sm">
+                    <span className="font-semibold">{formatShortDate(o.start)}</span>
+                    <br /><span className="text-muted">{formatTimeRange(o.start, o.end)}</span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )}
         </div>
       </div>
     </article>

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { categoryLabel, formatDay, formatMonth, formatTimeRange, formatWeekday, type EventItem } from '@/lib/events'
+import { categoryLabel, formatDay, formatMonth, formatTimeRange, formatWeekday, repeatLabel, type EventItem } from '@/lib/events'
 
 export function EventCard({ event }: { event: EventItem }) {
   return (
@@ -29,6 +29,11 @@ export function EventCard({ event }: { event: EventItem }) {
         <p className="text-sm font-medium text-brand-600">
           {formatWeekday(event.start)}, {formatTimeRange(event.start, event.end)}
         </p>
+        {repeatLabel(event) && (
+          <p className="mt-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted">
+            <RepeatIcon /> {repeatLabel(event)}
+          </p>
+        )}
         <h3 className="mt-2 text-lg font-bold leading-snug">{event.title}</h3>
         {event.summary && <p className="mt-2 text-sm leading-relaxed text-muted">{event.summary}</p>}
         {event.location && (
@@ -38,6 +43,14 @@ export function EventCard({ event }: { event: EventItem }) {
         )}
       </div>
     </Link>
+  )
+}
+
+export function RepeatIcon({ className = 'h-3.5 w-3.5 shrink-0' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M17 2l4 4-4 4" /><path d="M3 11V9a3 3 0 0 1 3-3h15" /><path d="M7 22l-4-4 4-4" /><path d="M21 13v2a3 3 0 0 1-3 3H3" />
+    </svg>
   )
 }
 

@@ -67,6 +67,8 @@ Then add a webhook: Settings → Webhooks → triggers *Story published* and *un
 - Demo content: `npm run storyblok:setup` creates the folder and 8 weekly demo events (2 in the past). It only creates them if missing; add `--reset` to regenerate their dates from today.
 - Shared code (the same in the Sanity branch): `lib/events.ts` (types, date formatting), `components/events/*`, `scripts/demo-events.mjs`. CMS-specific code: `lib/storyblok-events.ts`.
 
+- **Repeating events:** set "Repeats" to every week, every 2 weeks or monthly (same weekday, e.g. 1st Thursday), with an optional end date. The site works out the next dates in Bremen time (`occurrences()` in `lib/events.ts`). It shows each event once, at its next date, with "Jeden Donnerstag", and the event page lists "Weitere Termine".
+
 ## Adding a new section type
 
 1. Create `components/blocks/MyBlock.tsx` reading from `blok`, with `{...storyblokEditable(blok)}` on the root.

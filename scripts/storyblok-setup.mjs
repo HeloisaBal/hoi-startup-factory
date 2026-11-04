@@ -11,6 +11,7 @@
  *
  *   npm run storyblok:setup                 # safe: never overwrites existing stories
  *   npm run storyblok:setup -- --reset      # also overwrites "home" and "site-settings" with the demo content
+ *   npm run storyblok:setup -- --reset-events # only refreshes the demo events (keeps Home and Site settings)
  *   npm run storyblok:setup -- --remove-demo  # also deletes Storyblok's starter blocks (teaser, grid, feature)
  *
  * It also creates the "Events" folder with weekly demo events (if missing), adds an "Upcoming events"
@@ -26,6 +27,7 @@ if (!space || !token) {
   process.exit(1)
 }
 const RESET = process.argv.includes('--reset')
+const RESET_EVENTS = RESET || process.argv.includes('--reset-events')
 const REMOVE_DEMO = process.argv.includes('--remove-demo')
 
 const BASE = {
@@ -183,10 +185,10 @@ for (const e of demoEvents) {
   const content = {
     component: 'event', title: e.title, start: sbDate(e.start), end: sbDate(e.end), category: e.category,
     location: e.location, summary: e.summary, description: e.description,
-    registration_link: url(e.registrationUrl), registration_label: e.registrationLabel,
+    registration_link: url(e.registrationUrl), registration_label: e.registrationLabel, repeat: e.repeat,
   }
   const existing = await findStory(`events/${e.slug}`)
-  if (existing && !RESET) continue
+  if (existing && !RESET_EVENTS) continue
   const payload = { story: { name: e.title, slug: e.slug, parent_id: folder.id, content }, publish: 1 }
   if (existing) await api('PUT', `/stories/${existing.id}`, { ...payload, force_update: 1 })
   else await api('POST', '/stories', payload)
