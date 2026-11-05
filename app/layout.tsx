@@ -6,6 +6,7 @@ import './globals.css'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { DraftModeBanner } from '@/components/DraftModeBanner'
+import { HideOnStudio } from '@/components/HideOnStudio'
 import { sanityFetch, SanityLive } from '@/sanity/lib/live'
 import { SETTINGS_QUERY } from '@/sanity/lib/queries'
 import type { SiteSettings } from '@/sanity/lib/types'
@@ -38,9 +39,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="de" className={bricolageGrotesque.variable}>
       <body>
-        <Header settings={settings ?? undefined} />
+        <HideOnStudio><Header settings={settings ?? undefined} /></HideOnStudio>
         <main>{children}</main>
-        <Footer settings={settings ?? undefined} />
+        <HideOnStudio><Footer settings={settings ?? undefined} /></HideOnStudio>
 
         {/* Live updates: published changes appear without a redeploy */}
         <SanityLive />
